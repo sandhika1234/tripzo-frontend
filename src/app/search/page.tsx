@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, X, ChevronDown } from "lucide-react";
+import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import BottomNav from "@/components/BottomNav";
@@ -24,7 +24,7 @@ const sortOptions = [
   { value: "rating", label: "Highest Rated" },
 ];
 
-export default function SearchPage() {
+function SearchPageContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category")?.toUpperCase() || "all";
   const locationParam = searchParams.get("location") || "";
@@ -33,7 +33,6 @@ export default function SearchPage() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState(initialCategory);
   const [sortBy, setSortBy] = useState("relevance");
-  const [showFilters, setShowFilters] = useState(false);
 
   useEffect(() => {
     const fetchVehicles = async () => {
@@ -65,28 +64,39 @@ export default function SearchPage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
             <div>
               <h1 className="text-2xl sm:text-3xl font-extrabold text-dark">Available Vehicles</h1>
-              {locationParam && <p className="text-sm text-gray-500 mt-1">Showing results in <span className="font-medium text-teal-600">{locationParam}</span></p>}
+              {locationParam && (
+                <p className="text-sm text-gray-500 mt-1">
+                  Showing results in <span className="font-medium text-teal-600">{locationParam}</span>
+                </p>
+              )}
             </div>
             <div className="flex items-center gap-3">
               <div className="relative">
-                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}
-                  className="appearance-none bg-white border border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-sm font-medium cursor-pointer focus:border-teal-400 focus:outline-none">
-                  {sortOptions.map((opt) => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className="appearance-none bg-white border border-gray-200 rounded-xl px-4 py-2.5 pr-10 text-sm font-medium cursor-pointer focus:border-teal-400 focus:outline-none"
+                >
+                  {sortOptions.map((opt) => (
+                    <option key={opt.value} value={opt.value}>{opt.label}</option>
+                  ))}
                 </select>
                 <ChevronDown size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
               </div>
-              <button onClick={() => setShowFilters(!showFilters)}
-                className="lg:hidden flex items-center gap-2 bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm font-medium hover:border-teal-400">
-                <SlidersHorizontal size={16} /> Filters
-              </button>
             </div>
           </div>
 
-          {/* Category Chips */}
           <div className="flex gap-2 overflow-x-auto no-scrollbar mb-5">
             {categoryFilters.map((cat) => (
-              <button key={cat.id} onClick={() => setSelectedCategory(cat.id)}
-                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${selectedCategory === cat.id ? "bg-teal-600 text-white" : "bg-white text-gray-600 border border-gray-200"}`}>
+              <button
+                key={cat.id}
+                onClick={() => setSelectedCategory(cat.id)}
+                className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  selectedCategory === cat.id
+                    ? "bg-teal-600 text-white"
+                    : "bg-white text-gray-600 border border-gray-200"
+                }`}
+              >
                 {cat.label}
               </button>
             ))}
@@ -107,7 +117,9 @@ export default function SearchPage() {
             </div>
           ) : vehicles.length > 0 ? (
             <>
-              <p className="text-sm text-gray-500 mb-4">{vehicles.length} vehicle{vehicles.length > 1 ? "s" : ""} found</p>
+              <p className="text-sm text-gray-500 mb-4">
+                {vehicles.length} vehicle{vehicles.length > 1 ? "s" : ""} found
+              </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
                 {vehicles.map((vehicle: any) => (
                   <VehicleCard key={vehicle.id} vehicle={vehicle} />
@@ -126,5 +138,19 @@ export default function SearchPage() {
       <Footer />
       <BottomNav />
     </>
+  );
+}
+
+export default function SearchPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center text-gray-400">
+          Loading...
+        </div>
+      }
+    >
+      <SearchPageContent />
+    </Suspense>
   );
 }
