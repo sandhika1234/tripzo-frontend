@@ -1,0 +1,7 @@
+<svg width="800" height="600" viewBox="0 0 800 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="800" height="600" fill="#F0FDFA"/>
+  <rect x="320" y="220" width="160" height="160" rx="20" stroke="#99F6E4" stroke-width="3" fill="none"/>
+  <circle cx="370" cy="270" r="15" stroke="#99F6E4" stroke-width="3" fill="none"/>
+  <polyline points="480,380 420,300 320,380" stroke="#99F6E4" stroke-width="3" fill="none"/>
+  <text x="400" y="430" text-anchor="middle" fill="#5EEAD4" font-family="Inter, sans-serif" font-size="16" font-weight="600">Add your image here</text>
+</svg>
