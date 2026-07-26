@@ -26,11 +26,12 @@ export default function Navbar() {
     router.push("/");
   };
 
+  const userRole = user?.role?.toUpperCase() || "";
+
   return (
     <nav className="sticky top-0 z-50 bg-white/97 backdrop-blur-md border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-[68px]">
-          {/* Logo */}
           <Link href="/" className="flex items-center">
             <div className="bg-teal-600 rounded-xl px-5 py-2">
               <span className="text-white font-extrabold text-xl tracking-tight">
@@ -39,7 +40,6 @@ export default function Navbar() {
             </div>
           </Link>
 
-          {/* Desktop Nav Links */}
           <div className="hidden md:flex items-center gap-8">
             {navLinks.map((link, i) => (
               <Link
@@ -56,10 +56,8 @@ export default function Navbar() {
             ))}
           </div>
 
-          {/* Right Side */}
           <div className="flex items-center gap-3">
             {isAuthenticated && user ? (
-              /* Logged In - User Menu */
               <div className="relative">
                 <button
                   onClick={() => setUserMenu(!userMenu)}
@@ -92,7 +90,7 @@ export default function Navbar() {
                       <User size={16} /> My Profile
                     </Link>
 
-                    {user.role === "supplier" && (
+                    {userRole === "SUPPLIER" && (
                       <Link
                         href="/supplier/dashboard"
                         onClick={() => setUserMenu(false)}
@@ -102,7 +100,7 @@ export default function Navbar() {
                       </Link>
                     )}
 
-                    {user.role === "admin" && (
+                    {userRole === "ADMIN" && (
                       <Link
                         href="/admin/dashboard"
                         onClick={() => setUserMenu(false)}
@@ -122,7 +120,6 @@ export default function Navbar() {
                 )}
               </div>
             ) : (
-              /* Not Logged In */
               <>
                 <Link
                   href="/login"
@@ -139,7 +136,6 @@ export default function Navbar() {
               </>
             )}
 
-            {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
@@ -151,7 +147,6 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile Dropdown */}
       {mobileOpen && (
         <div className="md:hidden absolute top-[68px] left-0 right-0 bg-white border-b border-gray-200 shadow-lg animate-slide-in">
           <div className="px-4 py-4 flex flex-col gap-1">
